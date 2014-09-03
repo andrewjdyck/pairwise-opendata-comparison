@@ -1,0 +1,153 @@
+$def with (hello)
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>What's hot in #opendata?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- loading jquery -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js?2.8.0"></script>
+
+    <!-- Le styles -->
+    <link href="../static/assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="../static/assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="../static/assets/bootstrap/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../static/assets/bootstrap/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../static/assets/bootstrap/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../static/assets/bootstrap/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Regina #opendata</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="./">Home</a></li>
+              <li class="active"><a href="./stats">Stats</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>What's hot in City of Regina #opendata</h1>
+        <br />
+        <div id="bar-chart"></div>
+        <div id="bar-chart2"></div>
+      </div>
+
+      
+
+      <hr>
+
+      <footer>
+        <p>A <a href="http://northernlightsdata.com">Northern Lights Data Lab</a> project</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+
+<script type="text/javascript">
+
+  $$.getJSON('http://odsk.iriscouch.com/pw_odata/_design/dataset_stats/_view/name?group=true&callback=?', function(data) {
+    drawBars(data.rows);
+  });
+
+  var data = [{"key": "something", "value":10},{"key":"something else", "value":30}];
+
+function drawBars(data) {
+// start the bar chart
+var padding = 100;
+var barHeight = 60;
+var height = (barHeight + 50) * data.length;
+var width = 400;
+
+// the scales
+var y = d3.scale.linear().domain([0, data.length]).range([0, width]);
+var x = d3.scale.linear().domain([0, d3.max(data, function(d) { return d.value; })]).rangeRound([0, width]);
+
+// add the canvas to the DOM
+var barDemo = d3.select("#bar-chart2").
+  append("svg:svg").
+  attr("width", width + padding).
+  attr("height", height);
+
+// the rectangles
+barDemo.selectAll("rect").
+  data(data).
+  enter().
+  append("svg:rect").
+  attr("y", function(d, i) { return y(i); }).
+  attr("x", padding).
+  attr("width", function(d) { return x(d.value); }).
+  attr("height", barHeight).
+  attr("fill", "#2d578b");
+
+// the bar labels
+barDemo.selectAll("text").
+  data(data).
+  enter().
+  append("svg:text").
+  attr("y", function(d, i) { return y(i); }).
+  attr("x", function(d) { return padding + x(d.value); }).
+  attr("dy", 30).
+  attr("dx", "-1.2em").
+  attr("text-anchor", "middle").
+  text(function(d) { return d.value;}).
+  attr("fill", "white");
+
+// the category types
+barDemo.selectAll("text.yAxis").
+  data(data).
+  enter().append("svg:text").
+  attr("y", function(d, i) { return y(i); }).
+  attr("x", 0).
+  attr("dx", 0).
+  attr("dy", 20).
+  attr("text-anchor", "left").
+  attr("style", "font-size: 12; font-family: Helvetica, sans-serif").
+  text(function(d) { return d.key;}).
+  attr("transform", "translate(0, 18)").
+  attr("class", "yAxis");
+
+}
+
+</script>
+
+  </body>
+</html>
+

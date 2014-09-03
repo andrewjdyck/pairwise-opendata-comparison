@@ -1,0 +1,127 @@
+$def with (lstData)
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>What's hot in #opendata?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- loading jquery -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+
+    <!-- Le styles -->
+    <link href="../static/assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="../static/assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="../static/assets/bootstrap/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../static/assets/bootstrap/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../static/assets/bootstrap/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../static/assets/bootstrap/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Regina #opendata</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="./">Home</a></li>
+              <li class="active"><a href="./stats">Stats</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>What's hot in City of Regina #opendata</h1>
+        <p>Which of the two datasets below is hottest? Which is the most useful? Submit a tag that describes this dataset and another pair will be loaded.</p>
+        <!--<p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>-->
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div id="dataset0" class="span6">
+          <h2 id="dataset0-name">$lstData[0]['Name']</h2>
+           <p id="dataset0-desc">$lstData[0]['Description']</p>
+            <p>A tag that describes this dataset well is: <input type="text" id="tag0"> </p>
+            <p>Any comments on this dataset?: <input type="text" id="comment0"></p>
+          <p><a class="btn" id="dset0" onclick="update(this.id);" href="#">Vote for this dataset &raquo;</a></p>
+        </div>
+        <div id="dataset1" class="span6">
+          <h2 id="dataset1-name">$lstData[1]['Name']</h2>
+           <p id="dataset1-desc">$lstData[1]['Description']</p>
+           <p>A tag that describes this dataset well is: <input type="text" id="tag1"> </p>
+            <p>Any comments on this dataset?: <input type="text" id="comment1"></p>
+          <p><a class="btn" id="dset1" onclick="update(this.id);" href="#">Vote for this dataset &raquo;</a></p>
+       </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>A <a href="http://northernlightsdata.com">Northern Lights Data Lab</a> project</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+
+<script type="text/javascript">
+function update(text) {
+  var dsetnum = text.substring(4,5);
+  var tag = "#tag" + dsetnum;
+  var tagvalue = $$(tag).val();
+  var dsetname = "#dataset" + dsetnum + "-name";
+  var datasetName = $$(dsetname).html();
+  var commentTag = "#comment" + dsetnum;
+  var comment = $$(commentTag).val();
+  if (dsetnum == 0) {
+    var losername = $$("#dataset1-name").html();
+  } else {
+    var losername = $$("#dataset0-name").html();
+  }
+  var postData = {"winner_name": datasetName, "loser_name": losername, "tag": tagvalue, "comment": comment};
+  $$.post('./add', postData);
+  $$.getJSON('./datasets', function(data) {
+    $$("#dataset0-name").html(data[0].Name);
+    $$("#dataset1-name").html(data[1].Name);
+    $$("#dataset0-desc").html(data[0].Description);
+    $$("#dataset1-desc").html(data[1].Description);
+  });
+  $$(tag).val("");
+  $$(commentTag).val("");
+}
+</script>
+
+  </body>
+</html>
+

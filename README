@@ -1,0 +1,7 @@
+This is a python app using web.py to take open datasets from the City of Regina open data catalogue and collect community information such as popularity and tagging.
+
+The app requires an additional python file p.py that includes a username and password to write data to iriscouch.
+
+The iriscouch database is odsk.iriscouch.com/pw-odata.
+
+
